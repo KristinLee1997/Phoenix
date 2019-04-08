@@ -69,6 +69,10 @@
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
         </dependency>
+        <dependency>
+            <groupId>org.apache.thrift</groupId>
+            <artifactId>libthrift</artifactId>
+        </dependency>
     </dependencies>
 
     <build>
@@ -88,6 +92,34 @@
                     <overwrite>true</overwrite>
                     <verbose>true</verbose>
                 </configuration>
+            </plugin>
+
+            <!--Thrift编译IDL文件插件-->
+            <plugin>
+                <groupId>org.apache.thrift.tools</groupId>
+                <artifactId>maven-thrift-plugin</artifactId>
+                <version>0.1.11</version>
+                <configuration>
+                    <!--<thriftExecutable>/usr/local/bin/thrift-idl</thriftExecutable>-->
+                    <!--<thriftSourceRoot>classpath:resources/thrift-idl</thriftSourceRoot>-->
+                    <!--<outputDirectory>src/main/java</outputDirectory>-->
+                </configuration>
+                <executions>
+                    <execution>
+                        <id>thrift-sources</id>
+                        <phase>generate-sources</phase>
+                        <goals>
+                            <goal>compile</goal>
+                        </goals>
+                    </execution>
+                    <!--<execution>-->
+                    <!--<id>thrift-idl-test-sources</id>-->
+                    <!--<phase>generate-test-sources</phase>-->
+                    <!--<goals>-->
+                    <!--<goal>testCompile</goal>-->
+                    <!--</goals>-->
+                    <!--</execution>-->
+                </executions>
             </plugin>
         </plugins>
     </build>

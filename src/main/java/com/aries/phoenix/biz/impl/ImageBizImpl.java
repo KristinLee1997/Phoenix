@@ -3,6 +3,7 @@ package com.aries.phoenix.biz.impl;
 import com.aries.phoenix.biz.ImageBiz;
 import com.aries.phoenix.model.Photo;
 import com.aries.phoenix.service.PhotoService;
+import com.aries.phoenix.utils.PictureFormatUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -15,6 +16,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.util.Objects;
 
 @Service
 public class ImageBizImpl implements ImageBiz {
@@ -38,7 +40,7 @@ public class ImageBizImpl implements ImageBiz {
     public void getPhotoById(Long id, final HttpServletResponse response) throws IOException {
         Photo photo = photoService.selectByPrimaryKey(id);
         byte[] data = photo.getPhotoData();
-        response.setContentType("image/jpeg");
+        response.setContentType(PictureFormatUtil.getContentTypeByName(photo.getName()));
         response.setCharacterEncoding("UTF-8");
         OutputStream outputSream = response.getOutputStream();
         InputStream in = new ByteArrayInputStream(data);
@@ -52,12 +54,12 @@ public class ImageBizImpl implements ImageBiz {
 
     @Override
     public void getSpacePhoto(Long id, int width, int height, HttpServletResponse response) throws IOException {
-        Photo entity = photoService.selectByPrimaryKey(id);
-        byte[] data = entity.getPhotoData();
+        Photo photo = photoService.selectByPrimaryKey(id);
+        byte[] data = photo.getPhotoData();
         if (width != 0 && height != 0) {
-            data = scaleImage(data, width, height);
+            data = scaleImage(photo, width, height);
         }
-        response.setContentType("image/jpeg");
+        response.setContentType(PictureFormatUtil.getContentTypeByName(photo.getName()));
         response.setCharacterEncoding("UTF-8");
         OutputStream outputSream = response.getOutputStream();
         InputStream in = new ByteArrayInputStream(data);
@@ -69,8 +71,8 @@ public class ImageBizImpl implements ImageBiz {
         outputSream.close();
     }
 
-    private static byte[] scaleImage(byte[] data, int width, int height) throws IOException {
-        BufferedImage buffered_oldImage = ImageIO.read(new ByteArrayInputStream(data));
+    private static byte[] scaleImage(Photo photo, int width, int height) throws IOException {
+        BufferedImage buffered_oldImage = ImageIO.read(new ByteArrayInputStream(photo.getPhotoData()));
         int imageOldWidth = buffered_oldImage.getWidth();
         int imageOldHeight = buffered_oldImage.getHeight();
         double scale_x = (double) width / imageOldWidth;
@@ -82,7 +84,7 @@ public class ImageBizImpl implements ImageBiz {
         buffered_newImage.getGraphics().drawImage(buffered_oldImage.getScaledInstance(imageNewWidth, imageNewHeight, BufferedImage.SCALE_SMOOTH), 0, 0, null);
         buffered_newImage.getGraphics().dispose();
         ByteArrayOutputStream outPutStream = new ByteArrayOutputStream();
-        ImageIO.write(buffered_newImage, "jpeg", outPutStream);
+        ImageIO.write(buffered_newImage, Objects.requireNonNull(PictureFormatUtil.getTypeByName(photo.getName())), outPutStream);
         return outPutStream.toByteArray();
     }
 }
