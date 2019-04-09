@@ -102,7 +102,7 @@
                 <configuration>
                     <!--<thriftExecutable>/usr/local/bin/thrift-idl</thriftExecutable>-->
                     <thriftSourceRoot>${basedir}/src/main/resources/thrift-idl</thriftSourceRoot>
-                    <outputDirectory>${basedir}/src/main/java</outputDirectory>
+                    <outputDirectory>${basedir}/target</outputDirectory>
                     <generator>java</generator>
                 </configuration>
                 <executions>
@@ -113,13 +113,13 @@
                             <goal>compile</goal>
                         </goals>
                     </execution>
-                    <!--<execution>-->
-                    <!--<id>thrift-idl-test-sources</id>-->
-                    <!--<phase>generate-test-sources</phase>-->
-                    <!--<goals>-->
-                    <!--<goal>testCompile</goal>-->
-                    <!--</goals>-->
-                    <!--</execution>-->
+                    <execution>
+                        <id>thrift-idl-test-sources</id>
+                        <phase>generate-test-sources</phase>
+                        <goals>
+                            <goal>testCompile</goal>
+                        </goals>
+                    </execution>
                 </executions>
             </plugin>
         </plugins>
