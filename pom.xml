@@ -101,8 +101,9 @@
                 <version>0.1.11</version>
                 <configuration>
                     <!--<thriftExecutable>/usr/local/bin/thrift-idl</thriftExecutable>-->
-                    <thriftSourceRoot>src/main/resources/thrift-idl</thriftSourceRoot>
-                    <!--<outputDirectory>src/main/java</outputDirectory>-->
+                    <thriftSourceRoot>${basedir}/src/main/resources/thrift-idl</thriftSourceRoot>
+                    <outputDirectory>${basedir}/src/main/java</outputDirectory>
+                    <generator>java</generator>
                 </configuration>
                 <executions>
                     <execution>
