@@ -101,7 +101,7 @@
                 <version>0.1.11</version>
                 <configuration>
                     <!--<thriftExecutable>/usr/local/bin/thrift-idl</thriftExecutable>-->
-                    <!--<thriftSourceRoot>classpath:resources/thrift-idl</thriftSourceRoot>-->
+                    <thriftSourceRoot>src/main/resources/thrift-idl</thriftSourceRoot>
                     <!--<outputDirectory>src/main/java</outputDirectory>-->
                 </configuration>
                 <executions>
