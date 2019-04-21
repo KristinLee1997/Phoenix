@@ -5,7 +5,7 @@ import org.springframework.web.multipart.MultipartFile;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
-public interface ImageBiz {
+public interface FileBiz {
     int upload(MultipartFile file) throws IOException;
 
     void getPhotoById(Long id, final HttpServletResponse response) throws IOException;

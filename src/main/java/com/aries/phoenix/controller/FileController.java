@@ -1,6 +1,6 @@
 package com.aries.phoenix.controller;
 
-import com.aries.phoenix.biz.ImageBiz;
+import com.aries.phoenix.biz.FileBiz;
 import com.aries.phoenix.utils.Response;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -12,15 +12,15 @@ import java.io.IOException;
 
 
 @RestController
-public class ImageController {
+public class FileController {
     @Resource
-    private ImageBiz imageBiz;
+    private FileBiz imageBiz;
 
     @RequestMapping("/upload")
     public Response upload(MultipartFile file) throws IOException {
         int upload = imageBiz.upload(file);
         if (upload < 0) {
-            return Response.error(500, "上传图片失败");
+            return Response.error(500, "上传文件失败");
         }
         return Response.ok();
     }

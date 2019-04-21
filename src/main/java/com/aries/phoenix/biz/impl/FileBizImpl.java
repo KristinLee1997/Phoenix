@@ -1,9 +1,12 @@
 package com.aries.phoenix.biz.impl;
 
-import com.aries.phoenix.biz.ImageBiz;
-import com.aries.phoenix.model.Photo;
-import com.aries.phoenix.service.PhotoService;
-import com.aries.phoenix.utils.PictureFormatUtil;
+import com.aries.phoenix.biz.FileBiz;
+import com.aries.phoenix.enums.ImageType;
+import com.aries.phoenix.model.File;
+import com.aries.phoenix.service.FileService;
+import com.aries.phoenix.utils.FileTypeFormatUtil;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -19,28 +22,38 @@ import java.io.OutputStream;
 import java.util.Objects;
 
 @Service
-public class ImageBizImpl implements ImageBiz {
+public class FileBizImpl implements FileBiz {
+    private static final Logger logger = LoggerFactory.getLogger(FileBizImpl.class);
 
     @Autowired
     private PhotoService photoService;
 
+    @Autowired
+    private FileService fileService;
+
     @Override
-    public int upload(MultipartFile file) throws IOException {
-        InputStream is = file.getInputStream();
-        byte[] studentPhotoData = new byte[(int) file.getSize()];
-        is.read(studentPhotoData);
-        String fileName = file.getOriginalFilename();
-        Photo photo = new Photo();
-        photo.setPhotoData(studentPhotoData);
-        photo.setName(fileName);
-        return photoService.insert(photo);
+    public int upload(MultipartFile multipartFile) throws IOException {
+        InputStream is = multipartFile.getInputStream();
+        byte[] fileData = new byte[(int) multipartFile.getSize()];
+        is.read(fileData);
+        String fileName = multipartFile.getOriginalFilename();
+        File file = new File();
+        file.setName(fileName);
+        file.setFormat(FileTypeFormatUtil.getTypeByOriginFileName(fileName));
+        file.setData(fileData);
+        file.setSize(Long.parseLong(String.valueOf(fileData.length)));
+        return fileService.insert(file);
     }
 
     @Override
     public void getPhotoById(Long id, final HttpServletResponse response) throws IOException {
-        Photo photo = photoService.selectByPrimaryKey(id);
-        byte[] data = photo.getPhotoData();
-        response.setContentType(PictureFormatUtil.getContentTypeByName(photo.getName()));
+        File file = fileService.selectByPrimaryKey(id);
+        if (!ImageType.isExist(file.getFormat())) {
+            logger.error("图片格式存在问题!");
+            return;
+        }
+        byte[] data = file.getData();
+        response.setContentType(FileTypeFormatUtil.getContentTypeByName(file.getName()));
         response.setCharacterEncoding("UTF-8");
         OutputStream outputSream = response.getOutputStream();
         InputStream in = new ByteArrayInputStream(data);
@@ -54,12 +67,12 @@ public class ImageBizImpl implements ImageBiz {
 
     @Override
     public void getSpacePhoto(Long id, int width, int height, HttpServletResponse response) throws IOException {
-        Photo photo = photoService.selectByPrimaryKey(id);
-        byte[] data = photo.getPhotoData();
+        File file = fileService.selectByPrimaryKey(id);
+        byte[] data = file.getData();
         if (width != 0 && height != 0) {
-            data = scaleImage(photo, width, height);
+            data = scaleImage(file, width, height);
         }
-        response.setContentType(PictureFormatUtil.getContentTypeByName(photo.getName()));
+        response.setContentType(FileTypeFormatUtil.getContentTypeByName(file.getName()));
         response.setCharacterEncoding("UTF-8");
         OutputStream outputSream = response.getOutputStream();
         InputStream in = new ByteArrayInputStream(data);
@@ -71,8 +84,8 @@ public class ImageBizImpl implements ImageBiz {
         outputSream.close();
     }
 
-    private static byte[] scaleImage(Photo photo, int width, int height) throws IOException {
-        BufferedImage buffered_oldImage = ImageIO.read(new ByteArrayInputStream(photo.getPhotoData()));
+    private static byte[] scaleImage(File file, int width, int height) throws IOException {
+        BufferedImage buffered_oldImage = ImageIO.read(new ByteArrayInputStream(file.getData()));
         int imageOldWidth = buffered_oldImage.getWidth();
         int imageOldHeight = buffered_oldImage.getHeight();
         double scale_x = (double) width / imageOldWidth;
@@ -84,7 +97,7 @@ public class ImageBizImpl implements ImageBiz {
         buffered_newImage.getGraphics().drawImage(buffered_oldImage.getScaledInstance(imageNewWidth, imageNewHeight, BufferedImage.SCALE_SMOOTH), 0, 0, null);
         buffered_newImage.getGraphics().dispose();
         ByteArrayOutputStream outPutStream = new ByteArrayOutputStream();
-        ImageIO.write(buffered_newImage, Objects.requireNonNull(PictureFormatUtil.getTypeByName(photo.getName())), outPutStream);
+        ImageIO.write(buffered_newImage, Objects.requireNonNull(FileTypeFormatUtil.getTypeByOriginFileName(file.getName())), outPutStream);
         return outPutStream.toByteArray();
     }
 }
