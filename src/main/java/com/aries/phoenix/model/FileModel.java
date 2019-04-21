@@ -1,6 +1,6 @@
 package com.aries.phoenix.model;
 
-public class File {
+public class FileModel {
     private Long id;
 
     private String name;

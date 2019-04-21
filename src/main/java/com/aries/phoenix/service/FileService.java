@@ -1,9 +1,9 @@
 package com.aries.phoenix.service;
 
-import com.aries.phoenix.model.File;
+import com.aries.phoenix.model.FileModel;
 
 public interface FileService {
-    int insert(File file);
+    int insert(FileModel file);
 
-    File selectByPrimaryKey(Long id);
+    FileModel selectByPrimaryKey(Long id);
 }

@@ -5,18 +5,18 @@ import com.aries.phoenix.enums.FileType;
 public class FileTypeFormatUtil {
     public static String getNameByOriginFileName(String name) {
         String[] strName = name.split("\\.");
-        FileType photoType = FileType.getPhotoType(strName[0]);
-        if (photoType != null) {
-            return photoType.getType();
+        FileType fileType = FileType.getPhotoType(strName[0]);
+        if (fileType != null) {
+            return fileType.getType();
         }
         return null;
     }
 
     public static String getTypeByOriginFileName(String name) {
         String[] strName = name.split("\\.");
-        FileType photoType = FileType.getPhotoType(strName[strName.length - 1]);
-        if (photoType != null) {
-            return photoType.getType();
+        FileType fileType = FileType.getPhotoType(strName[strName.length - 1]);
+        if (fileType != null) {
+            return fileType.getType();
         }
         return null;
     }

@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
-<mapper namespace="com.aries.phoenix.mapper.FileMapper" >
-  <resultMap id="BaseResultMap" type="com.aries.phoenix.model.File" >
+<mapper namespace="com.aries.phoenix.mapper.FileModelMapper" >
+  <resultMap id="BaseResultMap" type="com.aries.phoenix.model.FileModel" >
     <id column="id" property="id" jdbcType="BIGINT" />
     <result column="name" property="name" jdbcType="VARCHAR" />
     <result column="format" property="format" jdbcType="VARCHAR" />
     <result column="size" property="size" jdbcType="BIGINT" />
   </resultMap>
-  <resultMap id="ResultMapWithBLOBs" type="com.aries.phoenix.model.File" extends="BaseResultMap" >
+  <resultMap id="ResultMapWithBLOBs" type="com.aries.phoenix.model.FileModel" extends="BaseResultMap" >
     <result column="data" property="data" jdbcType="LONGVARBINARY" />
   </resultMap>
   <sql id="Example_Where_Clause" >
@@ -74,7 +74,7 @@
   <sql id="Blob_Column_List" >
     data
   </sql>
-  <select id="selectByExampleWithBLOBs" resultMap="ResultMapWithBLOBs" parameterType="com.aries.phoenix.model.FileExample" >
+  <select id="selectByExampleWithBLOBs" resultMap="ResultMapWithBLOBs" parameterType="com.aries.phoenix.model.FileModelExample" >
     select
     <if test="distinct" >
       distinct
@@ -91,7 +91,7 @@
       order by ${orderByClause}
     </if>
   </select>
-  <select id="selectByExample" resultMap="BaseResultMap" parameterType="com.aries.phoenix.model.FileExample" >
+  <select id="selectByExample" resultMap="BaseResultMap" parameterType="com.aries.phoenix.model.FileModelExample" >
     select
     <if test="distinct" >
       distinct
@@ -118,13 +118,13 @@
     delete from file
     where id = #{id,jdbcType=BIGINT}
   </delete>
-  <delete id="deleteByExample" parameterType="com.aries.phoenix.model.FileExample" >
+  <delete id="deleteByExample" parameterType="com.aries.phoenix.model.FileModelExample" >
     delete from file
     <if test="_parameter != null" >
       <include refid="Example_Where_Clause" />
     </if>
   </delete>
-  <insert id="insert" parameterType="com.aries.phoenix.model.File" >
+  <insert id="insert" parameterType="com.aries.phoenix.model.FileModel" >
     <selectKey resultType="java.lang.Long" keyProperty="id" order="AFTER" >
       SELECT LAST_INSERT_ID()
     </selectKey>
@@ -133,7 +133,7 @@
     values (#{name,jdbcType=VARCHAR}, #{format,jdbcType=VARCHAR}, #{size,jdbcType=BIGINT}, 
       #{data,jdbcType=LONGVARBINARY})
   </insert>
-  <insert id="insertSelective" parameterType="com.aries.phoenix.model.File" >
+  <insert id="insertSelective" parameterType="com.aries.phoenix.model.FileModel" >
     <selectKey resultType="java.lang.Long" keyProperty="id" order="AFTER" >
       SELECT LAST_INSERT_ID()
     </selectKey>
@@ -167,7 +167,7 @@
       </if>
     </trim>
   </insert>
-  <select id="countByExample" parameterType="com.aries.phoenix.model.FileExample" resultType="java.lang.Integer" >
+  <select id="countByExample" parameterType="com.aries.phoenix.model.FileModelExample" resultType="java.lang.Integer" >
     select count(*) from file
     <if test="_parameter != null" >
       <include refid="Example_Where_Clause" />
@@ -217,7 +217,7 @@
       <include refid="Update_By_Example_Where_Clause" />
     </if>
   </update>
-  <update id="updateByPrimaryKeySelective" parameterType="com.aries.phoenix.model.File" >
+  <update id="updateByPrimaryKeySelective" parameterType="com.aries.phoenix.model.FileModel" >
     update file
     <set >
       <if test="name != null" >
@@ -235,7 +235,7 @@
     </set>
     where id = #{id,jdbcType=BIGINT}
   </update>
-  <update id="updateByPrimaryKeyWithBLOBs" parameterType="com.aries.phoenix.model.File" >
+  <update id="updateByPrimaryKeyWithBLOBs" parameterType="com.aries.phoenix.model.FileModel" >
     update file
     set name = #{name,jdbcType=VARCHAR},
       format = #{format,jdbcType=VARCHAR},
@@ -243,7 +243,7 @@
       data = #{data,jdbcType=LONGVARBINARY}
     where id = #{id,jdbcType=BIGINT}
   </update>
-  <update id="updateByPrimaryKey" parameterType="com.aries.phoenix.model.File" >
+  <update id="updateByPrimaryKey" parameterType="com.aries.phoenix.model.FileModel" >
     update file
     set name = #{name,jdbcType=VARCHAR},
       format = #{format,jdbcType=VARCHAR},

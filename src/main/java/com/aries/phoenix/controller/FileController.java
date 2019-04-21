@@ -1,7 +1,7 @@
 package com.aries.phoenix.controller;
 
 import com.aries.phoenix.biz.FileBiz;
-import com.aries.phoenix.utils.Response;
+import com.aries.phoenix.model.FileResponse;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
@@ -16,21 +16,21 @@ public class FileController {
     @Resource
     private FileBiz imageBiz;
 
-    @RequestMapping("/upload")
-    public Response upload(MultipartFile file) throws IOException {
-        int upload = imageBiz.upload(file);
+    @RequestMapping(value = "/upload")
+    public FileResponse upload(MultipartFile file) throws IOException {
+        int upload = imageBiz.uploadImage(file);
         if (upload < 0) {
-            return Response.error(500, "上传文件失败");
+            return FileResponse.error(500, "上传文件失败");
         }
-        return Response.ok();
+        return FileResponse.ok();
     }
 
-    @RequestMapping(value = "getPhotoById")
+    @RequestMapping(value = "/getPhotoById")
     public void getPhotoById(Long id, final HttpServletResponse response) throws IOException {
         imageBiz.getPhotoById(id, response);
     }
 
-    @RequestMapping(value = "getSpacePhoto")
+    @RequestMapping(value = "/getSpacePhoto")
     public void getSpacePhoto(Long id, int width, int height, final HttpServletResponse response) throws IOException {
         imageBiz.getSpacePhoto(id, width, height, response);
     }
