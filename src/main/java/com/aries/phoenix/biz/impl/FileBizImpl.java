@@ -33,40 +33,47 @@ public class FileBizImpl implements FileBiz {
     private FileService fileService;
 
     @Override
-    public int uploadImage(MultipartFile multipartFile) throws IOException {
+    public int uploadFile(MultipartFile multipartFile) throws IOException {
         InputStream is = multipartFile.getInputStream();
         byte[] data = new byte[(int) multipartFile.getSize()];
         is.read(data);
         String fileName = multipartFile.getOriginalFilename();
+
         FileModel fileModel = new FileModel();
         fileModel.setName(fileName);
         fileModel.setFormat(FileTypeFormatUtil.getTypeByOriginFileName(fileName));
         fileModel.setData(data);
         fileModel.setSize(Long.parseLong(String.valueOf(data.length)));
-        return fileService.insert(fileModel);
+        return upload(fileModel);
     }
 
     @Override
-    public int uploadText(FileData data) {
-        if (data.getName() == null) {
-            logger.warn("传入数据名称为空，请检查数据后重新传入");
-            return 0;
-        }
-        if (!FileType.isExist(FileTypeFormatUtil.getTypeByOriginFileName(data.getName()))) {
-            logger.warn("传入数据格式不正确，请检查数据后重新传入");
-            return 0;
-        }
-        if (data.getData() == null) {
-            logger.warn("上传数据为空");
-            return 0;
-        }
+    public int uploadFile(FileData data) {
         FileModel fileModel = new FileModel();
         fileModel.setName(data.getName());
         fileModel.setFormat(FileTypeFormatUtil.getTypeByOriginFileName(data.getName()));
         fileModel.setData(data.getData());
         fileModel.setSize(Long.parseLong(String.valueOf(data.getSize())));
+        return upload(fileModel);
+    }
+
+    @Override
+    public int upload(FileModel fileModel) {
+        if (fileModel.getName() == null) {
+            logger.warn("传入数据名称为空，请检查数据后重新传入");
+            return 0;
+        }
+        if (!FileType.isExist(FileTypeFormatUtil.getTypeByOriginFileName(fileModel.getName()))) {
+            logger.warn("传入数据格式不正确，请检查数据后重新传入");
+            return 0;
+        }
+        if (fileModel.getData() == null) {
+            logger.warn("上传数据为空");
+            return 0;
+        }
         return fileService.insert(fileModel);
     }
+
 
     @Override
     public void getPhotoById(Long id, final HttpServletResponse response) throws IOException {

@@ -83,6 +83,11 @@
             <groupId>org.apache.thrift</groupId>
             <artifactId>libthrift</artifactId>
         </dependency>
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <scope>test</scope>
+        </dependency>
     </dependencies>
 
     <build>
@@ -111,7 +116,7 @@
                 <artifactId>maven-thrift-plugin</artifactId>
                 <version>0.1.11</version>
                 <configuration>
-                    <!--<thriftExecutable>/usr/local/bin/thrift-idl</thriftExecutable>-->
+                    <!--<thriftExecutable>/usr/local/bin/server-idl</thriftExecutable>-->
                     <thriftSourceRoot>${basedir}/src/main/resources/thrift-idl</thriftSourceRoot>
                     <outputDirectory>${basedir}/target</outputDirectory>
                     <generator>java</generator>

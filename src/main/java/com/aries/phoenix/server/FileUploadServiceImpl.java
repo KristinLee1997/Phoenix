@@ -1,9 +1,9 @@
-package com.aries.phoenix.thrift;
+package com.aries.phoenix.server;
 
 import com.aries.phoenix.biz.FileBiz;
 import com.aries.phoenix.model.thrift.FileData;
 import com.aries.phoenix.model.thrift.Response;
-import com.aries.phoenix.thrift.idl.FileUploadService;
+import com.aries.phoenix.server.idl.FileUploadService;
 import org.apache.thrift.TException;
 
 import javax.annotation.Resource;
@@ -15,7 +15,7 @@ public class FileUploadServiceImpl implements FileUploadService.Iface {
 
     @Override
     public int uploadFile(FileData data) throws TException {
-        return fileBiz.uploadText(data);
+        return fileBiz.uploadFile(data);
     }
 
     @Override

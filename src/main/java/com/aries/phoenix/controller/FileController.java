@@ -14,11 +14,11 @@ import java.io.IOException;
 @RestController
 public class FileController {
     @Resource
-    private FileBiz imageBiz;
+    private FileBiz fileBiz;
 
     @RequestMapping(value = "/upload")
     public FileResponse upload(MultipartFile file) throws IOException {
-        int upload = imageBiz.uploadImage(file);
+        int upload = fileBiz.uploadFile(file);
         if (upload < 0) {
             return FileResponse.error(500, "上传文件失败");
         }
@@ -27,11 +27,11 @@ public class FileController {
 
     @RequestMapping(value = "/getPhotoById")
     public void getPhotoById(Long id, final HttpServletResponse response) throws IOException {
-        imageBiz.getPhotoById(id, response);
+        fileBiz.getPhotoById(id, response);
     }
 
     @RequestMapping(value = "/getSpacePhoto")
     public void getSpacePhoto(Long id, int width, int height, final HttpServletResponse response) throws IOException {
-        imageBiz.getSpacePhoto(id, width, height, response);
+        fileBiz.getSpacePhoto(id, width, height, response);
     }
 }

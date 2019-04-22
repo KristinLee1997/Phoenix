@@ -4,7 +4,7 @@
  * DO NOT EDIT UNLESS YOU ARE SURE THAT YOU KNOW WHAT YOU ARE DOING
  *  @generated
  */
-package com.aries.phoenix.thrift.idl;
+package com.aries.phoenix.server.idl;
 
 import com.aries.phoenix.model.thrift.FileData;
 import com.aries.phoenix.model.thrift.Response;
