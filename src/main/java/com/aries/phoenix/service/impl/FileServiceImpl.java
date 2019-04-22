@@ -27,7 +27,7 @@ public class FileServiceImpl implements FileService {
 
     @Override
     public FileModel selectByExample(FileModelExample example) {
-        List<FileModel> fileModels = fileMapper.selectByExample(example);
+        List<FileModel> fileModels = fileMapper.selectByExampleWithBLOBs(example);
         if (fileModels != null && fileModels.size() > 0) {
             return fileModels.get(0);
         }
