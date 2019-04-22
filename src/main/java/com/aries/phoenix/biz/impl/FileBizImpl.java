@@ -1,10 +1,12 @@
 package com.aries.phoenix.biz.impl;
 
 import com.aries.phoenix.biz.FileBiz;
+import com.aries.phoenix.constants.FileConstants;
 import com.aries.phoenix.enums.FileType;
 import com.aries.phoenix.enums.ImageType;
 import com.aries.phoenix.enums.TextType;
 import com.aries.phoenix.model.FileModel;
+import com.aries.phoenix.model.FileModelExample;
 import com.aries.phoenix.model.thrift.FileData;
 import com.aries.phoenix.model.thrift.Response;
 import com.aries.phoenix.service.FileService;
@@ -77,13 +79,11 @@ public class FileBizImpl implements FileBiz {
 
     @Override
     public void getPhotoById(Long id, final HttpServletResponse response) throws IOException {
-        FileModel fileModel = fileService.selectByPrimaryKey(id);
+        FileModelExample example = new FileModelExample();
+        example.createCriteria().andIdEqualTo(id).andFormatIn(FileConstants.PHOTO_TYPE);
+        FileModel fileModel = fileService.selectByExample(example);
         if (fileModel == null) {
             logger.warn("id:" + id + "图片不存在!");
-            return;
-        }
-        if (!ImageType.isExist(fileModel.getFormat())) {
-            logger.warn("图片格式存在问题!");
             return;
         }
         byte[] data = fileModel.getData();
@@ -100,8 +100,29 @@ public class FileBizImpl implements FileBiz {
     }
 
     @Override
+    public Response getPhotoById(Long id) {
+        FileModelExample example = new FileModelExample();
+        example.createCriteria().andIdEqualTo(id).andFormatIn(FileConstants.PHOTO_TYPE);
+        FileModel fileModel = fileService.selectByExample(example);
+        Response response = new Response();
+        if (fileModel == null) {
+            logger.warn("id:" + id + "图片不存在!");
+            response.setCode(400);
+            return response;
+        }
+        response.setCode(200);
+        response.setName(fileModel.getName());
+        response.setFormat(fileModel.getFormat());
+        response.setData(fileModel.getData());
+        response.setSize(fileModel.getSize());
+        return response;
+    }
+
+    @Override
     public Response getFileById(Long id) {
-        FileModel fileModel = fileService.selectByPrimaryKey(id);
+        FileModelExample example = new FileModelExample();
+        example.createCriteria().andIdEqualTo(id).andFormatIn(FileConstants.TEXT_TYPE);
+        FileModel fileModel = fileService.selectByExample(example);
         Response response = new Response();
         if (fileModel == null) {
             logger.warn("id:" + id + "对应的文件不存在");
@@ -113,6 +134,7 @@ public class FileBizImpl implements FileBiz {
             response.setCode(400);
             return response;
         }
+        response.setCode(200);
         response.setName(fileModel.getName());
         response.setData(fileModel.getData());
         response.setFormat(fileModel.getFormat());

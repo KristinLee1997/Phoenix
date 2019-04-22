@@ -22,4 +22,9 @@ public class FileUploadServiceImpl implements FileUploadService.Iface {
     public Response getFileById(long id) throws TException {
         return fileBiz.getFileById(id);
     }
+
+    @Override
+    public Response getPhotoById(long id) throws TException {
+        return fileBiz.getPhotoById(id);
+    }
 }

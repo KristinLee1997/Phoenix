@@ -17,4 +17,5 @@ struct Response{
 service FileUploadService {
     i32 uploadFile(1:FileData data);
     Response getFileById(1:i64 id);
+    Response getPhotoById(1:i64 id);
 }

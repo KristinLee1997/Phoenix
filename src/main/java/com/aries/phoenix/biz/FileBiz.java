@@ -17,6 +17,8 @@ public interface FileBiz {
 
     void getPhotoById(Long id, final HttpServletResponse response) throws IOException;
 
+    Response getPhotoById(Long id);
+
     Response getFileById(Long id);
 
     void getSpacePhoto(Long id, int width, int height, final HttpServletResponse response) throws IOException;
