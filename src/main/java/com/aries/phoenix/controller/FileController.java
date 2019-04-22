@@ -16,7 +16,7 @@ public class FileController {
     @Resource
     private FileBiz fileBiz;
 
-    @RequestMapping(value = "/upload")
+    @RequestMapping("/upload")
     public FileResponse upload(MultipartFile file) throws IOException {
         int upload = fileBiz.uploadFile(file);
         if (upload < 0) {
@@ -25,12 +25,12 @@ public class FileController {
         return FileResponse.ok();
     }
 
-    @RequestMapping(value = "/getPhotoById")
+    @RequestMapping("/getPhotoById")
     public void getPhotoById(Long id, final HttpServletResponse response) throws IOException {
         fileBiz.getPhotoById(id, response);
     }
 
-    @RequestMapping(value = "/getSpacePhoto")
+    @RequestMapping("/getSpacePhoto")
     public void getSpacePhoto(Long id, int width, int height, final HttpServletResponse response) throws IOException {
         fileBiz.getSpacePhoto(id, width, height, response);
     }
