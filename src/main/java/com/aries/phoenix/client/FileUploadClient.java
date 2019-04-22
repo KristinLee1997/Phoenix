@@ -2,6 +2,7 @@ package com.aries.phoenix.client;
 
 import com.aries.phoenix.model.thrift.FileData;
 import com.aries.phoenix.model.thrift.Response;
+import com.aries.phoenix.server.idl.FileUploadService;
 import org.apache.thrift.TException;
 
 import javax.annotation.Resource;
