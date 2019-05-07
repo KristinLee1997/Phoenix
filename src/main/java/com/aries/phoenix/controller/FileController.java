@@ -5,6 +5,7 @@ import com.aries.phoenix.model.PhoenixHttpResponse;
 import com.aries.phoenix.model.thrift.PhoenixResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
@@ -33,8 +34,8 @@ public class FileController {
         return PhoenixHttpResponse.ok(id);
     }
 
-    @RequestMapping("/getPhotoById")
-    public void getPhotoById(Long id, final HttpServletResponse response) throws IOException {
+    @RequestMapping("/getPhotoById/{id}")
+    public void getPhotoById(@PathVariable("id") Long id, final HttpServletResponse response) throws IOException {
         fileBiz.getPhotoById(id, response);
     }
 
