@@ -1,8 +1,8 @@
 package com.aries.phoenix.service.impl;
 
 import com.aries.phoenix.mapper.FileModelMapper;
-import com.aries.phoenix.model.FileModel;
-import com.aries.phoenix.model.FileModelExample;
+import com.aries.phoenix.model.po.FileModel;
+import com.aries.phoenix.model.po.FileModelExample;
 import com.aries.phoenix.service.FileService;
 import org.springframework.stereotype.Service;
 
@@ -17,7 +17,7 @@ public class FileServiceImpl implements FileService {
 
     @Override
     public int insert(FileModel file) {
-        return fileMapper.insert(file);
+        return fileMapper.insertSelective(file);
     }
 
     @Override

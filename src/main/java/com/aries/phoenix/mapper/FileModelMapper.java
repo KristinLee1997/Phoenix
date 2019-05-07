@@ -1,10 +1,9 @@
 package com.aries.phoenix.mapper;
 
-import com.aries.phoenix.model.FileModel;
-import com.aries.phoenix.model.FileModelExample;
-import org.apache.ibatis.annotations.Param;
-
+import com.aries.phoenix.model.po.FileModel;
+import com.aries.phoenix.model.po.FileModelExample;
 import java.util.List;
+import org.apache.ibatis.annotations.Param;
 
 public interface FileModelMapper {
     int countByExample(FileModelExample example);

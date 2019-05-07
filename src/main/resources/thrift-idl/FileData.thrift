@@ -6,16 +6,21 @@ struct FileData{
     3:required i32 size
 }
 
-struct Response{
-    1:required i32 code;
-    2:optional string name,
-    3:optional binary data,
-    4:optional i64 size,
-    5:optional string format,
+struct FileResponse{
+    1:optional string name,
+    2:optional binary data,
+    3:optional i64 size,
+    4:optional string format,
+}
+
+struct PhoenixResponse{
+    1:required i32 code,
+    2:optional string msg="",
+    3:optional FileResponse fileResponse,
 }
 
 service FileUploadService {
-    i32 uploadFile(1:FileData data);
-    Response getFileById(1:i64 id);
-    Response getPhotoById(1:i64 id);
+    i64 uploadFile(1:FileData data);
+    PhoenixResponse getFileById(1:i64 id);
+    PhoenixResponse getPhotoById(1:i64 id);
 }

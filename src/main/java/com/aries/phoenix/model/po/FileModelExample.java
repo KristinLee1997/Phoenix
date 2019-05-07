@@ -1,4 +1,4 @@
-package com.aries.phoenix.model;
+package com.aries.phoenix.model.po;
 
 import java.util.ArrayList;
 import java.util.List;
