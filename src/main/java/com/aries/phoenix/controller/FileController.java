@@ -1,8 +1,9 @@
 package com.aries.phoenix.controller;
 
 import com.aries.phoenix.biz.FileBiz;
-import com.aries.phoenix.model.FileResponse;
-import com.aries.phoenix.model.thrift.Response;
+import com.aries.phoenix.model.PhoenixHttpResponse;
+import com.aries.phoenix.model.thrift.PhoenixResponse;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
@@ -13,17 +14,20 @@ import java.io.IOException;
 
 
 @RestController
+@Slf4j
 public class FileController {
     @Resource
     private FileBiz fileBiz;
 
     @RequestMapping("/upload")
-    public FileResponse upload(MultipartFile file) throws IOException {
-        int upload = fileBiz.uploadFile(file);
-        if (upload < 0) {
-            return FileResponse.error(500, "上传文件失败");
+    public PhoenixHttpResponse upload(MultipartFile file) throws IOException {
+        Long id = fileBiz.uploadFile(file);
+        if (id < 0) {
+            log.error(file.getOriginalFilename() + "文件上传失败");
+            return PhoenixHttpResponse.error(500, "上传文件失败");
         }
-        return FileResponse.ok();
+        log.info("文件上传成功,id:{}", id);
+        return PhoenixHttpResponse.ok(id);
     }
 
     @RequestMapping("/getPhotoById")
@@ -37,8 +41,12 @@ public class FileController {
     }
 
     @RequestMapping("getFileById")
-    public FileResponse getFileById(Long id) {
-        Response response = fileBiz.getFileById(id);
-        return FileResponse.ok(response);
+    public PhoenixHttpResponse getFileById(Long id) {
+        PhoenixHttpResponse phoenixHttpResponse = new PhoenixHttpResponse();
+        PhoenixResponse response = fileBiz.getFileById(id);
+        phoenixHttpResponse.setCode(200);
+        phoenixHttpResponse.setMessage(String.format("获取文件id:%s成功", id));
+        phoenixHttpResponse.setData(response.getFileResponse());
+        return PhoenixHttpResponse.ok(response);
     }
 }

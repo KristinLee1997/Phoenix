@@ -1,4 +1,4 @@
-package com.aries.phoenix.model;
+package com.aries.phoenix.model.po;
 
 public class FileModel {
     private Long id;

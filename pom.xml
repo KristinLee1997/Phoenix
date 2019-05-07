@@ -88,6 +88,11 @@
             <artifactId>junit</artifactId>
             <scope>test</scope>
         </dependency>
+        <dependency>
+            <groupId>com.aries.hera</groupId>
+            <artifactId>hera-client-thrift</artifactId>
+            <version>1.0.2-SNAPSHOT</version>
+        </dependency>
     </dependencies>
 
     <build>

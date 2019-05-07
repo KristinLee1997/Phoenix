@@ -3,16 +3,15 @@ package com.aries.phoenix.biz.impl;
 import com.aries.phoenix.biz.FileBiz;
 import com.aries.phoenix.constants.FileConstants;
 import com.aries.phoenix.enums.FileType;
-import com.aries.phoenix.enums.ImageType;
 import com.aries.phoenix.enums.TextType;
-import com.aries.phoenix.model.FileModel;
-import com.aries.phoenix.model.FileModelExample;
+import com.aries.phoenix.model.po.FileModel;
+import com.aries.phoenix.model.po.FileModelExample;
 import com.aries.phoenix.model.thrift.FileData;
-import com.aries.phoenix.model.thrift.Response;
+import com.aries.phoenix.model.thrift.FileResponse;
+import com.aries.phoenix.model.thrift.PhoenixResponse;
 import com.aries.phoenix.service.FileService;
 import com.aries.phoenix.utils.FileTypeFormatUtil;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -28,14 +27,13 @@ import java.io.OutputStream;
 import java.util.Objects;
 
 @Service
+@Slf4j
 public class FileBizImpl implements FileBiz {
-    private static final Logger logger = LoggerFactory.getLogger(FileBizImpl.class);
-
     @Autowired
     private FileService fileService;
 
     @Override
-    public int uploadFile(MultipartFile multipartFile) throws IOException {
+    public Long uploadFile(MultipartFile multipartFile) throws IOException {
         InputStream is = multipartFile.getInputStream();
         byte[] data = new byte[(int) multipartFile.getSize()];
         is.read(data);
@@ -50,30 +48,36 @@ public class FileBizImpl implements FileBiz {
     }
 
     @Override
-    public int uploadFile(FileData data) {
+    public Long uploadFile(FileData data) {
         FileModel fileModel = new FileModel();
         fileModel.setName(data.getName());
         fileModel.setFormat(FileTypeFormatUtil.getTypeByOriginFileName(data.getName()));
         fileModel.setData(data.getData());
         fileModel.setSize(Long.parseLong(String.valueOf(data.getSize())));
-        return upload(fileModel);
+        Long id = upload(fileModel);
+        return id;
     }
 
     @Override
-    public int upload(FileModel fileModel) {
+    public Long upload(FileModel fileModel) {
         if (fileModel.getName() == null) {
-            logger.warn("传入数据名称为空，请检查数据后重新传入");
-            return 0;
+            log.warn("name:" + fileModel.getName() + "传入数据名称为空，请检查数据后重新传入");
+            return 0L;
         }
         if (!FileType.isExist(FileTypeFormatUtil.getTypeByOriginFileName(fileModel.getName()))) {
-            logger.warn("传入数据格式不正确，请检查数据后重新传入");
-            return 0;
+            log.warn("name:" + fileModel.getName() + "传入数据格式不正确，请检查数据后重新传入");
+            return 0L;
         }
         if (fileModel.getData() == null) {
-            logger.warn("上传数据为空");
-            return 0;
+            log.warn("name:" + fileModel.getName() + "上传数据为空");
+            return 0L;
         }
-        return fileService.insert(fileModel);
+        int id = fileService.insert(fileModel);
+        if (id <= 0) {
+            log.error("name:" + fileModel.getName() + "插入数据库失败");
+            return 0L;
+        }
+        return fileModel.getId();
     }
 
 
@@ -83,7 +87,7 @@ public class FileBizImpl implements FileBiz {
         example.createCriteria().andIdEqualTo(id).andFormatIn(FileConstants.PHOTO_TYPE);
         FileModel fileModel = fileService.selectByExample(example);
         if (fileModel == null) {
-            logger.warn("id:" + id + "图片不存在!");
+            log.warn("id:" + id + "图片不存在!");
             return;
         }
         byte[] data = fileModel.getData();
@@ -100,46 +104,55 @@ public class FileBizImpl implements FileBiz {
     }
 
     @Override
-    public Response getPhotoById(Long id) {
+    public PhoenixResponse getPhotoById(Long id) {
         FileModelExample example = new FileModelExample();
         example.createCriteria().andIdEqualTo(id).andFormatIn(FileConstants.PHOTO_TYPE);
         FileModel fileModel = fileService.selectByExample(example);
-        Response response = new Response();
+        PhoenixResponse phoenixResponse = new PhoenixResponse();
+        FileResponse fileResponse = new FileResponse();
         if (fileModel == null) {
-            logger.warn("id:" + id + "图片不存在!");
-            response.setCode(400);
-            return response;
+            log.warn("id:{}图片不存在!", id);
+            phoenixResponse.setCode(400);
+            phoenixResponse.setMsg("id:" + id + "图片不存在!");
+            return phoenixResponse;
         }
-        response.setCode(200);
-        response.setName(fileModel.getName());
-        response.setFormat(fileModel.getFormat());
-        response.setData(fileModel.getData());
-        response.setSize(fileModel.getSize());
-        return response;
+        fileResponse.setName(fileModel.getName());
+        fileResponse.setFormat(fileModel.getFormat());
+        fileResponse.setData(fileModel.getData());
+        fileResponse.setSize(fileModel.getSize());
+        phoenixResponse.setCode(200);
+        phoenixResponse.setMsg("获取id:{" + id + "}图片成功");
+        phoenixResponse.setFileResponse(fileResponse);
+        return phoenixResponse;
     }
 
     @Override
-    public Response getFileById(Long id) {
+    public PhoenixResponse getFileById(Long id) {
         FileModelExample example = new FileModelExample();
         example.createCriteria().andIdEqualTo(id).andFormatIn(FileConstants.TEXT_TYPE);
         FileModel fileModel = fileService.selectByExample(example);
-        Response response = new Response();
+        PhoenixResponse phoenixResponse = new PhoenixResponse();
+        FileResponse fileResponse = new FileResponse();
         if (fileModel == null) {
-            logger.warn("id:" + id + "对应的文件不存在");
-            response.setCode(400);
-            return response;
+            log.warn("id:" + id + "对应的文件不存在");
+            phoenixResponse.setCode(400);
+            phoenixResponse.setMsg("id:" + id + "对应的文件不存在");
+            return phoenixResponse;
         }
         if (!TextType.isExist(fileModel.getFormat())) {
-            logger.warn("文件格式存在问题!");
-            response.setCode(400);
-            return response;
+            log.warn("文件格式存在问题!");
+            phoenixResponse.setCode(400);
+            phoenixResponse.setMsg("文件格式存在问题!");
+            return phoenixResponse;
         }
-        response.setCode(200);
-        response.setName(fileModel.getName());
-        response.setData(fileModel.getData());
-        response.setFormat(fileModel.getFormat());
-        response.setSize(fileModel.getSize());
-        return response;
+        fileResponse.setName(fileModel.getName());
+        fileResponse.setData(fileModel.getData());
+        fileResponse.setFormat(fileModel.getFormat());
+        fileResponse.setSize(fileModel.getSize());
+        phoenixResponse.setCode(200);
+        phoenixResponse.setMsg("获取文件name:" + fileModel.getName() + "成功");
+        phoenixResponse.setFileResponse(fileResponse);
+        return phoenixResponse;
     }
 
     @Override

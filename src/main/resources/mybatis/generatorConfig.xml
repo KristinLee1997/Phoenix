@@ -24,7 +24,7 @@
         </javaTypeResolver>
 
         <!-- 生成模型的包名和位置-->
-        <javaModelGenerator targetPackage="com.aries.phoenix.model" targetProject="src/main/java">
+        <javaModelGenerator targetPackage="com.aries.phoenix.model.po" targetProject="src/main/java">
             <property name="enableSubPackages" value="true"/>
             <property name="trimStrings" value="true"/>
         </javaModelGenerator>
@@ -35,7 +35,7 @@
         </sqlMapGenerator>
 
         <!-- 生成DAO的包名和位置-->
-        <javaClientGenerator type="XMLMAPPER" targetPackage="com.aries.phoenix.mapper" targetProject="MAVEN">
+        <javaClientGenerator type="XMLMAPPER" targetPackage="com.aries.phoenix.mapper" targetProject="src/main/java">
             <property name="enableSubPackages" value="true"/>
         </javaClientGenerator>
 
