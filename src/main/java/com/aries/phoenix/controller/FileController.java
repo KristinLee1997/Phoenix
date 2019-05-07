@@ -4,6 +4,7 @@ import com.aries.phoenix.biz.FileBiz;
 import com.aries.phoenix.model.PhoenixHttpResponse;
 import com.aries.phoenix.model.thrift.PhoenixResponse;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
@@ -14,6 +15,8 @@ import java.io.IOException;
 
 
 @RestController
+@RequestMapping("/phoenix")
+@CrossOrigin
 @Slf4j
 public class FileController {
     @Resource
